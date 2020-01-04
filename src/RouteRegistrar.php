@@ -4,6 +4,7 @@ namespace Pebble\Routes;
 
 use Illuminate\Cache\CacheManager;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Schema;
 use Pebble\Routes\Models\RouteInterface;
 
 class RouteRegistrar
@@ -71,6 +72,12 @@ class RouteRegistrar
      */
     public function registerRoutes(): bool
     {
+        $tableNames = config('pebble-routes.table_names');
+
+        if(!Schema::hasTable($tableNames['routes'])) {
+            return false;
+        }
+
         $routes = $this->getRoutes();
         $routes->each(function($route) {
             app()->router->addRoute($route->action, $route->uri, $route->action);
