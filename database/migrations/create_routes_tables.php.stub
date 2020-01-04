@@ -1,0 +1,40 @@
+<?php
+
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class CreateRoutesTables extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        $tableNames = config('pebble-routes.table_names');
+
+        if (!Schema::hasTable($tableNames['routes'])) {
+            Schema::create($tableNames['routes'], function (Blueprint $table) {
+                $table->bigIncrements('id');
+                $table->string('uri');
+                $table->string('method');
+                $table->json('action');
+                $table->json('middleware')->nullable();
+            });
+        }
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        $tableNames = config('pebble-routes.table_names');
+
+        Schema::dropIfExists($tableNames['routes']);
+    }
+}
