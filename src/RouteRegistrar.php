@@ -2,6 +2,8 @@
 
 namespace Pebble\Routes;
 
+use Illuminate\Cache\CacheManager;
+use Illuminate\Support\Collection;
 use Pebble\Routes\Models\RouteInterface;
 
 class RouteRegistrar
