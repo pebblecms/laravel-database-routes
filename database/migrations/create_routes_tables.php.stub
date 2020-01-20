@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Http\Response;
 
 class CreateRoutesTables extends Migration
 {
@@ -19,9 +20,36 @@ class CreateRoutesTables extends Migration
             Schema::create($tableNames['routes'], function (Blueprint $table) {
                 $table->bigIncrements('id');
                 $table->string('uri');
-                $table->string('method');
-                $table->json('action');
-                $table->json('middleware')->nullable();
+                $table->string('prefix');
+                $table->string('namespace')->default("\App\Http\Controllers");
+                $table->json('verbs');
+                $table->string('action');
+                $table->json('defaults')->nullable();
+
+                // $table->json('middleware')->nullable();
+                // domain (subdomain)
+                // group
+                // $table->string('name')->unique()->nullable();
+                // view -> parameters,
+                // regex (->where())
+                // name + prefixes
+                // https ¿?
+            });
+        }
+
+        if (!Schema::hasTable($tableNames['middlewares'])) {
+            Schema::create($tableNames['middlewares'], function (Blueprint $table) {
+                $table->bigIncrements('id');
+                $table->string('name');
+            });
+        }
+
+        if (!Schema::hasTable($tableNames['redirections'])) {
+            Schema::create($tableNames['redirections'], function (Blueprint $table) {
+                $table->bigIncrements('id');
+                $table->string('uri');
+                $table->string('destination');
+                $table->string('status')->default(301);
             });
         }
     }
@@ -35,6 +63,8 @@ class CreateRoutesTables extends Migration
     {
         $tableNames = config('pebble-routes.table_names');
 
+        Schema::dropIfExists($tableNames['routes']);
+        Schema::dropIfExists($tableNames['routes']);
         Schema::dropIfExists($tableNames['routes']);
     }
 }

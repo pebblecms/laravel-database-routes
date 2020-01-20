@@ -2,10 +2,12 @@
 
 namespace Pebble\Routes;
 
+use DateInterval;
 use Illuminate\Cache\CacheManager;
+use Illuminate\Contracts\Cache\Repository;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
-use Pebble\Routes\Models\RouteInterface;
+use Pebble\Routes\Contracts\Route as RouteContract;
 
 class RouteRegistrar
 {
@@ -14,12 +16,6 @@ class RouteRegistrar
 
     /** @var \Illuminate\Cache\CacheManager */
     protected $cacheManager;
-
-    /** @var string */
-    protected $routeClass;
-
-    /** @var \Illuminate\Support\Collection */
-    protected $routes;
 
     /** @var DateInterval|int */
     public static $cacheExpirationTime;
@@ -30,6 +26,18 @@ class RouteRegistrar
     /** @var string */
     public static $cacheModelKey;
 
+    /** @var string */
+    protected $redirectionClass;
+
+    /** @var \Illuminate\Support\Collection */
+    protected $redirections;
+
+    /** @var string */
+    protected $routeClass;
+
+    /** @var \Illuminate\Support\Collection */
+    protected $routes;
+
     /**
      * PermissionRegistrar constructor.
      *
@@ -37,7 +45,8 @@ class RouteRegistrar
      */
     public function __construct(CacheManager $cacheManager)
     {
-        $this->routeClass = config('pebble-routes.models.route');
+        $this->setRouteClass(config('pebble-routes.models.route'));
+        $this->setRedirectionClass(config('pebble-routes.models.route'));
         $this->cacheManager = $cacheManager;
         $this->initializeCache();
     }
@@ -50,7 +59,7 @@ class RouteRegistrar
         $this->cache = $this->getCacheStoreFromConfig();
     }
 
-    protected function getCacheStoreFromConfig(): \Illuminate\Contracts\Cache\Repository
+    protected function getCacheStoreFromConfig(): Repository
     {
         // the 'default' fallback here is from the pebble-routes.php config file, where 'default' means to use config(cache.default)
         $cacheDriver = config('pebble-routes.cache.store', 'default');
@@ -66,7 +75,6 @@ class RouteRegistrar
     }
 
     /**
-     * // TODO: register redirections, apply middlewares...
      *
      * @return bool
      */
@@ -80,10 +88,30 @@ class RouteRegistrar
 
         $routes = $this->getRoutes();
         $routes->each(function($route) {
-            app()->router->addRoute($route->action, $route->uri, $route->action);
+            app()->router->addRoute($route->verbs, $route->uri, $route->action);
+        });
+
+        if(!Schema::hasTable($tableNames['redirections'])) {
+            return false;
+        }
+
+        $redirections = $this->getRedirections();
+        $redirections->each(function($redirection) {
+            app()->router->any('\Illuminate\Routing\RedirectController')
+                ->defaults('destination', $redirection->destination)
+                ->defaults('status', $redirection->status);
         });
 
         return true;
+    }
+
+    /**
+     * Flush the cache.
+     */
+    public function forgetCachedRedirections()
+    {
+        $this->redirections = null;
+        return $this->cache->forget(self::$cacheKey);
     }
 
     /**
@@ -97,7 +125,6 @@ class RouteRegistrar
 
     /**
      * Get the routes based on the passed params.
-     * TODO: filter routes using parameters to optimize sql query
      *
      * @param array $params
      *
@@ -117,14 +144,44 @@ class RouteRegistrar
         return $routes;
     }
 
+    public function getRedirections(array $params = []): Collection
+    {
+        if ($this->redirections === null) {
+            $this->redirections = $this->cache->remember(self::$cacheKey, self::$cacheExpirationTime, function () {
+                return $this->getRedirectionClass()->get();
+            });
+        }
+        $redirections = clone $this->redirections;
+        foreach ($params as $attr => $value) {
+            $redirections = $redirections->where($attr, $value);
+        }
+        return $redirections;
+    }
+
     /**
-     * Get an instance of the permission class.
+     * Get an instance of the redirection class.
      *
-     * @return \Pebble\Routes\Models\RouteInterface
+     * @return \Pebble\Routes\Contracts\Route
      */
-    public function getRouteClass(): RouteInterface
+    public function getRedirectionClass(): RouteContract
+    {
+        return app($this->redirectionClass);
+    }
+
+    /**
+     * Get an instance of the route class.
+     *
+     * @return \Pebble\Routes\Contracts\Redirection
+     */
+    public function getRouteClass(): RouteContract
     {
         return app($this->routeClass);
+    }
+
+    public function setRedirectionClass($redirectionClass)
+    {
+        $this->redirectionClass = $redirectionClass;
+        return $this;
     }
 
     public function setRouteClass($routeClass)

@@ -2,18 +2,13 @@
 
 namespace Pebble\Routes\Models;
 
-use Pebble\Routes\Contracts\Route as RouteContract;
+use Pebble\Routes\Contracts\Redirection as RedirectionContract;
 use Illuminate\Database\Eloquent\Model;
 use Pebble\Routes\RouteRegistrar;
 
-class Route extends Model implements RouteContract
+class Redirection extends Model implements RedirectionContract
 {
-    protected $casts = [
-        'defaults' => 'array',
-        'middleware' => 'array',
-        'verbs' => 'array'
-    ];
-    protected $fillable = ['action', 'defaults', 'middleware', 'uri', 'verbs'];
+    protected $fillable = ['uri', 'destination', 'status'];
     protected $guarded = ['id'];
     public $timestamps = false;
 
@@ -24,7 +19,7 @@ class Route extends Model implements RouteContract
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
-        $this->setTable(config('pebble-routes.table_names.routes'));
+        $this->setTable(config('pebble-routes.table_names.redirections'));
     }
 
     /**
@@ -37,15 +32,15 @@ class Route extends Model implements RouteContract
         parent::boot();
 
         static::created(function () {
-            resolve(RouteRegistrar::class)->forgetCachedRoutes();
+            resolve(RouteRegistrar::class)->forgetCachedRedirections();
         });
 
         static::updated(function () {
-            resolve(RouteRegistrar::class)->forgetCachedRoutes();
+            resolve(RouteRegistrar::class)->forgetCachedRedirections();
         });
 
         static::deleted(function () {
-            resolve(RouteRegistrar::class)->forgetCachedRoutes();
+            resolve(RouteRegistrar::class)->forgetCachedRedirections();
         });
     }
 }

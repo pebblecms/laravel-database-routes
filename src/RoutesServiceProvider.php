@@ -5,11 +5,23 @@ namespace Pebble\Routes;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
-use Pebble\Routes\Models\RouteInterface;
+use Pebble\Routes\Models\Redirection as RedirectionContract;
+use Pebble\Routes\Models\Route as RouteContract;
 use Pebble\Routes\RouteRegistrar;
 
 class RoutesServiceProvider extends ServiceProvider
 {
+    /**
+     * The event handler mappings for the package.
+     *
+     * @var array
+     */
+    /*protected $listen = [
+        \Pebble\Routes\Events\RouteWasCreated::class => [
+            \Pebble\Routes\Listeners\Something::class,
+        ]
+    ];*/
+
     /**
      * Indicates if loading of the provider is deferred.
      *
@@ -54,10 +66,22 @@ class RoutesServiceProvider extends ServiceProvider
         );
     }
 
+    /*
+    private function registerListeners()
+    {
+        foreach($this->listen as $event => $listeners) {
+            foreach($listeners as $listener) {
+                Event::listen($event, $listener);
+            }
+        }
+    }
+    //*/
+
     protected function registerModelBindings()
     {
-        $config = $this->app->config['pebble-routes.models'];
-        $this->app->bind(RouteInterface::class, $config['route']);
+        $models = $this->app->config['pebble-routes.models'];
+        $this->app->bind(RedirectionContract::class, $models['redirection']);
+        $this->app->bind(RouteContract::class, $models['route']);
     }
 
     /**
@@ -70,11 +94,11 @@ class RoutesServiceProvider extends ServiceProvider
     {
         $timestamp = date('Y_m_d_His');
 
-        return Collection::make($this->app->databasePath().DIRECTORY_SEPARATOR.'migrations'.DIRECTORY_SEPARATOR)
+        return Collection::make($this->app->databasePath() . DIRECTORY_SEPARATOR . 'migrations' . DIRECTORY_SEPARATOR)
             ->flatMap(function ($path) use ($filesystem) {
-                return $filesystem->glob($path.'*_create_routes_tables.php');
+                return $filesystem->glob($path . '*_create_routes_tables.php');
             })
-            ->push($this->app->databasePath()."/migrations/{$timestamp}_create_routes_tables.php")
+            ->push($this->app->databasePath() . "/migrations/{$timestamp}_create_routes_tables.php")
             ->first();
     }
 }

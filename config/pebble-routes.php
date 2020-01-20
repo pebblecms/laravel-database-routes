@@ -11,6 +11,8 @@ return [
         'route' => \Pebble\Routes\Models\Route::class
     ],
     'table_names' => [
-        'routes' => 'routes'
+        'middlewares' => 'middlewares',
+        'routes' => 'routes',
+        'redirections' => 'redirections'
     ]
 ];
