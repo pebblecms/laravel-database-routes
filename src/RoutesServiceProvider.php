@@ -70,9 +70,7 @@ class RoutesServiceProvider extends ServiceProvider
 
     protected function bootMiddlewares()
     {
-        // $this->app['router']->pushMiddlewareToGroup('web', config('pebble-routes.middlewares.set_locale'));
         $this->app->make('Illuminate\Contracts\Http\Kernel')->prependMiddleware(config('pebble-routes.middlewares.set_locale'));
-        // $this->app['router']->middleware('shortname', Vendor\Some\Class::class);
     }
 
     /*

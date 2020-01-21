@@ -24,6 +24,7 @@ class CreateRoutesTables extends Migration
                 $table->string('namespace')->default("\\App\\Http\\Controllers");
                 $table->json('verbs');
                 $table->string('action');
+                $table->string('locale');
                 $table->json('defaults')->nullable();
 
                 // $table->json('middleware')->nullable();

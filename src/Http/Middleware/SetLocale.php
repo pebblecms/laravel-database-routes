@@ -1,6 +1,6 @@
 <?php
 
-namespace Pebble\Http\Middleware;
+namespace Pebble\Routes\Http\Middleware;
 
 use Closure;
 
@@ -15,7 +15,12 @@ class SetLocale
      */
     public function handle($request, Closure $next)
     {
-        app()->setLocale('ca');
+        $routeLoader = resolve(\Pebble\Routes\RouteRegistrar::class);
+        $route = $routeLoader->getRoutes(['uri' => $request->path()]);
+
+        if($route) {
+            app()->setLocale($route->locale);
+        }
 
         return $next($request);
     }
