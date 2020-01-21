@@ -44,6 +44,8 @@ class RoutesServiceProvider extends ServiceProvider
             __DIR__.'/../database/migrations/create_routes_tables.php.stub' => $this->getMigrationFileName($filesystem),
         ], 'migrations');
 
+        $this->bootMiddlewares();
+
         $this->registerModelBindings();
 
         $routeLoader->registerRoutes();
@@ -64,6 +66,13 @@ class RoutesServiceProvider extends ServiceProvider
             __DIR__.'/../config/pebble-routes.php',
             'pebble-routes'
         );
+    }
+
+    protected function bootMiddlewares()
+    {
+        // $this->app['router']->pushMiddlewareToGroup('web', config('pebble-routes.middlewares.set_locale'));
+        $this->app->make('Illuminate\Contracts\Http\Kernel')->prependMiddleware(config('pebble-routes.middlewares.set_locale'));
+        // $this->app['router']->middleware('shortname', Vendor\Some\Class::class);
     }
 
     /*

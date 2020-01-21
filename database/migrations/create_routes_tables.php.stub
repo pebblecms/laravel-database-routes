@@ -21,7 +21,7 @@ class CreateRoutesTables extends Migration
                 $table->bigIncrements('id');
                 $table->string('uri');
                 $table->string('prefix')->nullable();
-                $table->string('namespace')->default("\App\Http\Controllers");
+                $table->string('namespace')->default("\\App\\Http\\Controllers");
                 $table->json('verbs');
                 $table->string('action');
                 $table->json('defaults')->nullable();

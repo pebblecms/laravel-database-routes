@@ -15,5 +15,8 @@ return [
         'middlewares' => 'middlewares',
         'routes' => 'routes',
         'redirections' => 'redirections'
+    ],
+    'middlewares' => [
+        'set_locale' => \Pebble\Http\Middleware\SetLocale::class
     ]
 ];
