@@ -77,34 +77,25 @@ class RouteRegistrar
     }
 
     /**
-     *
-     * @return bool
+     * @return void
      */
-    public function registerRoutes(): bool
+    public function registerRoutes(): void
     {
         $tableNames = config('pebble-routes.table_names');
 
-        if(!Schema::hasTable($tableNames['routes'])) {
-            return false;
+        if(Schema::hasTable($tableNames['routes']) && Schema::hasTable($tableNames['redirections'])) {
+            $routes = $this->getRoutes();
+            $routes->each(function($route) {
+                app()->router->addRoute($route->verbs, $route->uri, $route->action);
+            });
+
+            $redirections = $this->getRedirections();
+            $redirections->each(function($redirection) {
+                app()->router->any('\Illuminate\Routing\RedirectController')
+                    ->defaults('destination', $redirection->destination)
+                    ->defaults('status', $redirection->status);
+            });
         }
-
-        $routes = $this->getRoutes();
-        $routes->each(function($route) {
-            app()->router->addRoute($route->verbs, $route->uri, $route->action);
-        });
-
-        if(!Schema::hasTable($tableNames['redirections'])) {
-            return false;
-        }
-
-        $redirections = $this->getRedirections();
-        $redirections->each(function($redirection) {
-            app()->router->any('\Illuminate\Routing\RedirectController')
-                ->defaults('destination', $redirection->destination)
-                ->defaults('status', $redirection->status);
-        });
-
-        return true;
     }
 
     /**
