@@ -17,6 +17,8 @@ class CreateRoutesTables extends Migration
         $tableNames = config('pebble-routes.table_names');
 
         if (!Schema::hasTable($tableNames['routes'])) {
+            $fallbackLocale = config('app.fallback_locale');
+
             Schema::create($tableNames['routes'], function (Blueprint $table) {
                 $table->bigIncrements('id');
                 $table->string('uri');
@@ -24,17 +26,8 @@ class CreateRoutesTables extends Migration
                 $table->string('namespace')->default("\\App\\Http\\Controllers");
                 $table->json('verbs');
                 $table->string('action');
-                $table->string('locale');
+                $table->string('locale')->default($fallbackLocale);
                 $table->json('defaults')->nullable();
-
-                // $table->json('middleware')->nullable();
-                // domain (subdomain)
-                // group
-                // $table->string('name')->unique()->nullable();
-                // view -> parameters,
-                // regex (->where())
-                // name + prefixes
-                // https ¿?
             });
         }
 
