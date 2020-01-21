@@ -8,6 +8,7 @@ return [
         'store' => 'default',
     ],
     'models' => [
+        'redirection' => \Pebble\Routes\Models\Redirection::class,
         'route' => \Pebble\Routes\Models\Route::class
     ],
     'table_names' => [

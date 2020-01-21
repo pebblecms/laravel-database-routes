@@ -5,8 +5,10 @@ namespace Pebble\Routes;
 use DateInterval;
 use Illuminate\Cache\CacheManager;
 use Illuminate\Contracts\Cache\Repository;
+use Illuminate\Contracts\Cache\Store;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
+use Pebble\Routes\Contracts\Redirection as RedirectionContract;
 use Pebble\Routes\Contracts\Route as RouteContract;
 
 class RouteRegistrar
@@ -163,7 +165,7 @@ class RouteRegistrar
      *
      * @return \Pebble\Routes\Contracts\Route
      */
-    public function getRedirectionClass(): RouteContract
+    public function getRedirectionClass(): RedirectionContract
     {
         return app($this->redirectionClass);
     }
@@ -195,7 +197,7 @@ class RouteRegistrar
      *
      * @return \Illuminate\Contracts\Cache\Store
      */
-    public function getCacheStore(): \Illuminate\Contracts\Cache\Store
+    public function getCacheStore(): Store
     {
         return $this->cache->getStore();
     }
