@@ -19,12 +19,13 @@ class CreateRoutesTables extends Migration
         if (!Schema::hasTable($tableNames['routes'])) {
             $fallbackLocale = config('app.fallback_locale');
 
-            Schema::create($tableNames['routes'], function (Blueprint $table) {
+            Schema::create($tableNames['routes'], function (Blueprint $table) use ($fallbackLocale) {
                 $table->bigIncrements('id');
                 $table->string('uri');
                 $table->string('prefix')->nullable();
                 $table->string('namespace')->default("\\App\\Http\\Controllers");
                 $table->json('verbs');
+                $table->string('name')->unique()->nullable();
                 $table->string('action');
                 $table->string('locale')->default($fallbackLocale);
                 $table->json('defaults')->nullable();

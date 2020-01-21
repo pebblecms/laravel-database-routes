@@ -86,7 +86,7 @@ class RouteRegistrar
         if(Schema::hasTable($tableNames['routes']) && Schema::hasTable($tableNames['redirections'])) {
             $routes = $this->getRoutes();
             $routes->each(function($route) {
-                app()->router->addRoute($route->verbs, $route->uri, $route->action);
+                app()->router->addRoute($route->verbs, $route->uri, $route->action)->name(optional($route)->name);
             });
 
             $redirections = $this->getRedirections();
