@@ -13,7 +13,7 @@ class Route extends Model implements RouteContract
         'middleware' => 'array',
         'verbs' => 'array'
     ];
-    protected $fillable = ['action', 'defaults', 'middleware', 'uri', 'verbs'];
+    protected $fillable = ['action', 'defaults', 'middleware', 'uri', 'verbs', 'locale'];
     protected $guarded = ['id'];
     public $timestamps = false;
 

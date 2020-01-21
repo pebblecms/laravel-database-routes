@@ -16,10 +16,10 @@ class SetLocale
     public function handle($request, Closure $next)
     {
         $routeLoader = resolve(\Pebble\Routes\RouteRegistrar::class);
-        $route = $routeLoader->getRoutes(['uri' => $request->path()]);
+        $routes = $routeLoader->getRoutes(['uri' => $request->path()]);
 
-        if($route) {
-            app()->setLocale($route->locale);
+        if($routes) {
+            app()->setLocale(optional($routes->first())->locale);
         }
 
         return $next($request);
