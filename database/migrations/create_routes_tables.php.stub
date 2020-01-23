@@ -27,7 +27,9 @@ class CreateRoutesTables extends Migration
                 $table->json('verbs');
                 $table->string('name')->unique()->nullable();
                 $table->string('action');
+                $table->string('domain')->nullable();
                 $table->string('locale')->default($fallbackLocale);
+                $table->json('middleware')->nullable();
                 $table->json('defaults')->nullable();
             });
         }
