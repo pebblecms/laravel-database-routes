@@ -8,7 +8,7 @@ return [
         'store' => 'default',
     ],
     'middlewares' => [
-        'set_locale' => \Pebble\Routes\Http\Middleware\SetLocale::class
+        'set_locale' => \Pebble\Routes\Middleware\SetLocale::class
     ],
     'models' => [
         'redirection' => \Pebble\Routes\Models\Redirection::class,

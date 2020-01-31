@@ -1,6 +1,6 @@
 <?php
 
-namespace Pebble\Routes\Http\Middleware;
+namespace Pebble\Routes\Middleware;
 
 use Closure;
 

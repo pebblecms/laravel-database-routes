@@ -8,8 +8,14 @@ use Pebble\Routes\RouteRegistrar;
 
 class Redirection extends Model implements RedirectionContract
 {
-    protected $fillable = ['uri', 'destination', 'status'];
+    protected $fillable = [
+        'uri',
+        'destination',
+        'status'
+    ];
+
     protected $guarded = ['id'];
+
     public $timestamps = false;
 
     /**

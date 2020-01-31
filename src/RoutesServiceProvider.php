@@ -2,11 +2,12 @@
 
 namespace Pebble\Routes;
 
+use Illuminate\Cache\CacheManager;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
-use Pebble\Routes\Models\Redirection as RedirectionContract;
-use Pebble\Routes\Models\Route as RouteContract;
+use Pebble\Routes\Contracts\Redirection as RedirectionContract;
+use Pebble\Routes\Contracts\Route as RouteContract;
 use Pebble\Routes\RouteRegistrar;
 
 class RoutesServiceProvider extends ServiceProvider

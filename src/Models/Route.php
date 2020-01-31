@@ -3,8 +3,8 @@
 namespace Pebble\Routes\Models;
 
 use Pebble\Routes\Contracts\Route as RouteContract;
-use Illuminate\Database\Eloquent\Model;
 use Pebble\Routes\RouteRegistrar;
+use Illuminate\Database\Eloquent\Model;
 
 class Route extends Model implements RouteContract
 {
@@ -13,8 +13,20 @@ class Route extends Model implements RouteContract
         'middleware' => 'array',
         'verbs' => 'array'
     ];
-    protected $fillable = ['action', 'defaults', 'domain', 'middleware', 'uri', 'verbs', 'locale', 'name'];
+
+    protected $fillable = [
+        'action',
+        'defaults',
+        'domain',
+        'middleware',
+        'uri',
+        'verbs',
+        'locale',
+        'name'
+    ];
+
     protected $guarded = ['id'];
+
     public $timestamps = false;
 
     /**

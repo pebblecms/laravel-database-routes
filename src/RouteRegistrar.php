@@ -79,7 +79,7 @@ class RouteRegistrar
     /**
      * @return void
      */
-    public function registerRoutes(): void
+    public function registerRoutes(): bool
     {
         $tableNames = config('pebble-routes.table_names');
 
@@ -92,13 +92,16 @@ class RouteRegistrar
                     ->middleware($route->middleware);
             });
 
-            $redirections = $this->getRedirections();
+            /*$redirections = $this->getRedirections();
             $redirections->each(function($redirection) {
                 app()->router->any('\Illuminate\Routing\RedirectController')
                     ->defaults('destination', $redirection->destination)
                     ->defaults('status', $redirection->status);
-            });
+            });*/
+            return true;
         }
+
+        return false;
     }
 
     /**
@@ -157,7 +160,7 @@ class RouteRegistrar
     /**
      * Get an instance of the redirection class.
      *
-     * @return \Pebble\Routes\Contracts\Route
+     * @return \Pebble\Routes\Contracts\Redirection
      */
     public function getRedirectionClass(): RedirectionContract
     {
@@ -167,7 +170,7 @@ class RouteRegistrar
     /**
      * Get an instance of the route class.
      *
-     * @return \Pebble\Routes\Contracts\Redirection
+     * @return \Pebble\Routes\Contracts\Route
      */
     public function getRouteClass(): RouteContract
     {
