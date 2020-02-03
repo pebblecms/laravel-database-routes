@@ -2,6 +2,7 @@
 
 namespace Pebble\Routes;
 
+use Illuminate\Routing\Router;
 use Pebble\Routes\Contracts\Route as RouteContract;
 use Pebble\Routes\Contracts\RouteFactory;
 
@@ -11,7 +12,7 @@ class Route implements RouteFactory
     {
         return app(config('pebble-routes.models.route'))::create([
             'uri' => $uri,
-            'verbs' => [ 'GET', 'HEAD' ],
+            'verbs' => Router::$verbs,
             'action' => $action
         ]);
     }
@@ -20,7 +21,7 @@ class Route implements RouteFactory
     {
         return app(config('pebble-routes.models.route'))::create([
             'uri' => $uri,
-            'verbs' => [ 'GET', 'HEAD' ],
+            'verbs' => [ 'DELETE' ],
             'action' => $action
         ]);
     }
@@ -34,11 +35,11 @@ class Route implements RouteFactory
         ]);
     }
 
-    public static function match($uri, $action): RouteContract
+    public static function match($methods, $uri, $action): RouteContract
     {
         return app(config('pebble-routes.models.route'))::create([
             'uri' => $uri,
-            'verbs' => [ 'GET', 'HEAD' ],
+            'verbs' => array_map('strtoupper', (array) $methods),
             'action' => $action
         ]);
     }
@@ -56,17 +57,17 @@ class Route implements RouteFactory
     {
         return app(config('pebble-routes.models.route'))::create([
             'uri' => $uri,
-            'verbs' => [ 'GET', 'HEAD' ],
+            'verbs' => [ 'PATCH' ],
             'action' => $action
         ]);
     }
 
-    public static function permanentRedirect($uri, $action): RouteContract
+    public static function permanentRedirect($uri, $destination): RouteContract
     {
-        return app(config('pebble-routes.models.route'))::create([
+        return app(config('pebble-routes.models.redirect'))::create([
             'uri' => $uri,
-            'verbs' => [ 'GET', 'HEAD' ],
-            'action' => $action
+            'destination' => $destination,
+            'statis' => 301
         ]);
     }
 
@@ -74,7 +75,7 @@ class Route implements RouteFactory
     {
         return app(config('pebble-routes.models.route'))::create([
             'uri' => $uri,
-            'verbs' => [ 'GET', 'HEAD' ],
+            'verbs' => [ 'POST' ],
             'action' => $action
         ]);
     }
@@ -83,18 +84,14 @@ class Route implements RouteFactory
     {
         return app(config('pebble-routes.models.route'))::create([
             'uri' => $uri,
-            'verbs' => [ 'GET', 'HEAD' ],
+            'verbs' => [ 'PUT' ],
             'action' => $action
         ]);
     }
 
     public static function redirect($uri, $action): RouteContract
     {
-        return app(config('pebble-routes.models.route'))::create([
-            'uri' => $uri,
-            'verbs' => [ 'GET', 'HEAD' ],
-            'action' => $action
-        ]);
+        // TODO
     }
 
     public static function view($uri, $action): RouteContract

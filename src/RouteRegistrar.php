@@ -48,7 +48,7 @@ class RouteRegistrar
     public function __construct(CacheManager $cacheManager)
     {
         $this->setRouteClass(config('pebble-routes.models.route'));
-        $this->setRedirectionClass(config('pebble-routes.models.route'));
+        $this->setRedirectionClass(config('pebble-routes.models.redirection'));
         $this->cacheManager = $cacheManager;
         $this->initializeCache();
     }
@@ -92,12 +92,12 @@ class RouteRegistrar
                     ->middleware($route->middleware);
             });
 
-            /*$redirections = $this->getRedirections();
+            $redirections = $this->getRedirections();
             $redirections->each(function($redirection) {
                 app()->router->any('\Illuminate\Routing\RedirectController')
                     ->defaults('destination', $redirection->destination)
                     ->defaults('status', $redirection->status);
-            });*/
+            });
             return true;
         }
 

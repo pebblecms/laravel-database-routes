@@ -34,13 +34,6 @@ class CreateRoutesTables extends Migration
             });
         }
 
-        if (!Schema::hasTable($tableNames['middlewares'])) {
-            Schema::create($tableNames['middlewares'], function (Blueprint $table) {
-                $table->bigIncrements('id');
-                $table->string('name');
-            });
-        }
-
         if (!Schema::hasTable($tableNames['redirections'])) {
             Schema::create($tableNames['redirections'], function (Blueprint $table) {
                 $table->bigIncrements('id');
@@ -61,7 +54,6 @@ class CreateRoutesTables extends Migration
         $tableNames = config('pebble-routes.table_names');
 
         Schema::dropIfExists($tableNames['routes']);
-        Schema::dropIfExists($tableNames['middlewares']);
         Schema::dropIfExists($tableNames['redirections']);
     }
 }

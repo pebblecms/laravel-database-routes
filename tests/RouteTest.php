@@ -31,4 +31,16 @@ class RouteTest extends TestCase
         $response = $this->get('test');
         $response->assertStatus(Response::HTTP_OK);
     }
+
+    public function test_create_route_post()
+    {
+        $route = Route::post('test', '\Pebble\Routes\Tests\FakeController@test');
+
+        $this->routeLoader->registerRoutes();
+
+        $this->assertEquals('test', $route->uri);
+
+        $response = $this->post('test');
+        $response->assertStatus(Response::HTTP_OK);
+    }
 }
